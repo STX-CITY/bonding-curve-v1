@@ -15,7 +15,6 @@
 (define-constant ERR-NOT-ENOUGH-TOKEN-BALANCE (err u1004))
 (define-constant BUY-INFO-ERROR (err u2001))
 (define-constant SELL-INFO-ERROR (err u2002))
-(define-constant ERR-NOT-GET-CONTRACT-TOKEN-BALANCE (err u2002))
 
 (define-constant token-supply u10000000000000000) ;; match with the token's supply
 (define-constant BONDING-DEX-ADDRESS (as-contract tx-sender))
@@ -24,11 +23,6 @@
 (define-constant VIRTUAL_STX_VALUE u2000000000) ;; 2k stx
 (define-constant STX_TARGET_AMOUNT u10000000000) ;; 10k stx
 (define-constant COMPLETE_FEE u50000000)
-
-;; bonding curve config - small case
-;; (define-constant VIRTUAL_STX_VALUE u10000000) ;; 10 stx
-;; (define-constant STX_TARGET_AMOUNT u40000000) ;; 40 stx
-;; (define-constant COMPLETE_FEE u5000000)
 
 ;; FEE AND DEX WALLETS
 (define-constant STX_CITY_SWAP_FEE_WALLET 'ST24JGYXDDK2W9S8B8XA2K7KJNA46F0S1G2Z5PT4Z)
@@ -73,7 +67,7 @@
             (total-stx (+ (var-get stx-balance) initial-stx-amount))
             (contract-token-balance (var-get token-balance))
             (k (* contract-token-balance initial-stx-amount))
-            (burn-amount (/ k total-stx)) ;; virtual buy more with the initial-stx-amount, then burn that amount
+            (burn-amount (/ k total-stx)) ;; virtual buy more tokens with the initial-stx-amount, then burn that amount
             (remain-tokens (- contract-token-balance burn-amount))
             (remain-stx (- (var-get stx-balance) COMPLETE_FEE))
           )

@@ -36,6 +36,7 @@
 (define-data-var virtual-stx-amount uint u0)
 (define-data-var token-balance uint u0)
 (define-data-var stx-balance uint u0)
+(define-data-var burn-percent uint u10)
 
 ;; #[allow(unchecked_data)]
 (define-public (buy (token-trait <sip-010-trait>) (stx-amount uint) ) 
@@ -63,11 +64,9 @@
       (if (>= new-stx-balance  STX_TARGET_AMOUNT)
         (begin
           (let (
-            (initial-stx-amount (var-get virtual-stx-amount))
-            (total-stx (+ (var-get stx-balance) initial-stx-amount))
             (contract-token-balance (var-get token-balance))
-            (k (* contract-token-balance initial-stx-amount))
-            (burn-amount (/ k total-stx)) ;; virtual buy more tokens with the initial-stx-amount, then burn that amount
+            (burn-percent-val (var-get burn-percent) )
+            (burn-amount (/ (* contract-token-balance burn-percent-val) u100)) ;; burn tokens for a deflationary boost after the bonding curve completed
             (remain-tokens (- contract-token-balance burn-amount))
             (remain-stx (- (var-get stx-balance) COMPLETE_FEE))
           )
@@ -175,5 +174,6 @@
   (var-set virtual-stx-amount VIRTUAL_STX_VALUE)
   (var-set token-balance token-supply)  
   (var-set tradable true)
+  (var-set burn-percent u20)
   (ok true)
 )

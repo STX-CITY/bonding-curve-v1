@@ -9,6 +9,7 @@
 (use-trait sip-010-trait .sip-010-trait-ft-standard.sip-010-trait) ;; for devnet
 ;; error constants
 (define-constant ERR-UNAUTHORIZED (err u401))
+(define-constant ERR-UNAUTHORIZED-TOKEN (err u402))
 (define-constant ERR-TRADING-DISABLED (err u1001))
 (define-constant DEX-HAS-NOT-ENOUGH-STX (err u1002))
 (define-constant ERR-NOT-ENOUGH-STX-BALANCE (err u1003))
@@ -16,8 +17,8 @@
 (define-constant BUY-INFO-ERROR (err u2001))
 (define-constant SELL-INFO-ERROR (err u2002))
 
-(define-constant token-supply u10000000000000000) ;; match with the token's supply
-(define-constant BONDING-DEX-ADDRESS (as-contract tx-sender))
+(define-constant token-supply u10000000000000000) ;; match with the token's supply (10B 6 decimals)
+(define-constant BONDING-DEX-ADDRESS (as-contract tx-sender)) ;; one contract per token
 
 ;; ;; bonding curve config
 (define-constant VIRTUAL_STX_VALUE u2000000000) ;; 2k stx
@@ -31,6 +32,9 @@
 (define-constant BURN_ADDRESS 'ST000000000000000000002AMW42H) ;; burn testnet
 ;; (define-constant BURN_ADDRESS 'SP000000000000000000002Q6VF78) ;; burn mainnet
 
+
+(define-constant allow-token 'ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM.welsh)
+
 ;; data vars
 (define-data-var tradable bool false)
 (define-data-var virtual-stx-amount uint u0)
@@ -38,11 +42,11 @@
 (define-data-var stx-balance uint u0)
 (define-data-var burn-percent uint u10)
 
-;; #[allow(unchecked_data)]
 (define-public (buy (token-trait <sip-010-trait>) (stx-amount uint) ) 
   (begin
     (asserts! (var-get tradable) ERR-TRADING-DISABLED)
     (asserts! (> stx-amount u0) ERR-NOT-ENOUGH-STX-BALANCE)
+    (asserts! (is-eq allow-token (contract-of token-trait)) ERR-UNAUTHORIZED-TOKEN )
     (let (
       (buy-info (unwrap! (get-buyable-tokens stx-amount) BUY-INFO-ERROR))
       (stx-fee (get fee buy-info))
@@ -94,11 +98,11 @@
     )
   )
 )
-;; #[allow(unchecked_data)]
 (define-public (sell (token-trait <sip-010-trait>) (tokens-in uint) ) ;; swap out for virtual trading
   (begin
     (asserts! (var-get tradable) ERR-TRADING-DISABLED)
     (asserts! (> tokens-in u0) ERR-NOT-ENOUGH-TOKEN-BALANCE)
+    (asserts! (is-eq allow-token (contract-of token-trait)) ERR-UNAUTHORIZED-TOKEN )
     (let (
       (sell-info (unwrap! (get-sellable-stx tokens-in) SELL-INFO-ERROR))
       (stx-fee (get fee sell-info))

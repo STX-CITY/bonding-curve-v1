@@ -13,7 +13,7 @@
 (impl-trait .sip-010-trait-ft-standard.sip-010-trait)
 
 ;; Variables
-(define-fungible-token WELSH)
+(define-fungible-token LEO)
 (define-data-var contract-owner principal tx-sender) 
 
 
@@ -24,13 +24,13 @@
         (asserts! (is-eq from tx-sender)
             (err ERR-UNAUTHORIZED))
         ;; Perform the token transfer
-        (ft-transfer? WELSH amount from to)
+        (ft-transfer? LEO amount from to)
     )
 )
 
 
 ;; DEFINE METADATA
-(define-data-var token-uri (optional (string-utf8 256)) (some u"https://gaia.hiro.so/hub/17noxBPKRLYzauzQuvzEFfD4R2bSEJ8pkm/WELSH.json"))
+(define-data-var token-uri (optional (string-utf8 256)) (some u"https://gaia.hiro.so/hub/17noxBPKRLYzauzQuvzEFfD4R2bSEJ8pkm/LEO.json"))
 
 (define-public (set-token-uri (value (string-utf8 256)))
     (begin
@@ -49,14 +49,14 @@
 
 
 (define-read-only (get-balance (owner principal))
-  (ok (ft-get-balance WELSH owner))
+  (ok (ft-get-balance LEO owner))
 )
 (define-read-only (get-name)
-  (ok "WELSH")
+  (ok "LEO")
 )
 
 (define-read-only (get-symbol)
-  (ok "WELSH")
+  (ok "LEO")
 )
 
 (define-read-only (get-decimals)
@@ -64,7 +64,7 @@
 )
 
 (define-read-only (get-total-supply)
-  (ok (ft-get-supply WELSH))
+  (ok (ft-get-supply LEO))
 )
 
 (define-read-only (get-token-uri)
@@ -119,11 +119,11 @@
 ;; ---------------------------------------------------------
 (begin
     ;; (try! (send-stx 'SP1FQ3DQDR5N9HJX3XC5DNKFCG4DHH48EFJQV6QH0 u2000000))
-    ;; (try! (ft-mint? WELSH u10000000000000000 'STTN58GQ56YWS2EWE2R2WPZX7GFQG1X1HEFZDQ6J.dex-ver5)) ;; for testnet 
-    ;; (try! (ft-mint? WELSH u10000000000000000 'ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM.bonding-curve-dex)) ;; for devnet
-    (try! (ft-mint? WELSH u10000000000000000 'ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM.dex-ver2)) ;; for devnet
-  ;; (try! (ft-mint? WELSH u500000000000000 'ST1SJ3DTE5DN7X54YDH5D64R3BCB6A2AG2ZQ8YPD5))
-  ;; (try! (ft-mint? WELSH u500000000000000 'STNHKEPYEPJ8ET55ZZ0M5A34J0R3N5FM2CMMMAZ6))
+    ;; (try! (ft-mint? LEO u10000000000000000 'STTN58GQ56YWS2EWE2R2WPZX7GFQG1X1HEFZDQ6J.dex-ver5)) ;; for testnet 
+    ;; (try! (ft-mint? LEO u10000000000000000 'ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM.bonding-curve-dex)) ;; for devnet
+    (try! (ft-mint? LEO u10000000000000000 'ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM.dex-ver2)) ;; for devnet
+  ;; (try! (ft-mint? LEO u500000000000000 'ST1SJ3DTE5DN7X54YDH5D64R3BCB6A2AG2ZQ8YPD5))
+  ;; (try! (ft-mint? LEO u500000000000000 'STNHKEPYEPJ8ET55ZZ0M5A34J0R3N5FM2CMMMAZ6))
 
   ;; 9000000000000000
   

@@ -5,8 +5,13 @@ authors = []
 telemetry = false
 cache_dir = './.cache'
 requirements = []
-[contracts.bonding-curve-dex]
-path = 'contracts/bonding-curve-dex.clar'
+[contracts.dex-ver2]
+path = 'contracts/dex-ver2.clar'
+clarity_version = 2
+epoch = 2.5
+
+[contracts.leo]
+path = 'contracts/leo.clar'
 clarity_version = 2
 epoch = 2.5
 

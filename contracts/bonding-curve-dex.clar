@@ -16,19 +16,21 @@
 (define-constant BUY-INFO-ERROR (err u2001))
 (define-constant SELL-INFO-ERROR (err u2002))
 
-(define-constant token-supply u10000000000000000) ;; match with the token's supply
-(define-constant BONDING-DEX-ADDRESS (as-contract tx-sender))
+(define-constant token-supply u10000000000000000) ;; match with the token's supply (10B 6 decimals)
+(define-constant BONDING-DEX-ADDRESS (as-contract tx-sender)) ;; one contract per token
 
 ;; ;; bonding curve config
 (define-constant VIRTUAL_STX_VALUE u2000000000) ;; 2k stx
 (define-constant STX_TARGET_AMOUNT u10000000000) ;; 10k stx
-(define-constant COMPLETE_FEE u50000000)
+(define-constant COMPLETE_FEE u50000000) ;; 50 STX  
+
+(define-constant this-token .welsh)
 
 ;; FEE AND DEX WALLETS
 (define-constant STX_CITY_SWAP_FEE_WALLET 'ST24JGYXDDK2W9S8B8XA2K7KJNA46F0S1G2Z5PT4Z)
-(define-constant STX_CITY_COMPLETE_FEE_WALLET 'STCVPZ84G8QX3FH12VVZ0DQ7CCBQ9DAQWP0B7H8A)
+(define-constant STX_CITY_COMPLETE_FEE_WALLET 'STCVPZ84G8QX3FH12VVZ0DQ7CCBQ9DAQWP0B7H8A) ;; separation of fee concerns per wallets
 (define-constant VELAR_ADDRESS 'STZQ6HJ5VVMWS30W4M2YWXKVHZ1YQ8PTGW37QWXD)
-(define-constant BURN_ADDRESS 'ST000000000000000000002AMW42H) ;; burn testnet
+(define-constant BURN_ADDRESS 'ST000000000000000000002AMW42H) ;; burn testnet - can't be evil on testnet
 ;; (define-constant BURN_ADDRESS 'SP000000000000000000002Q6VF78) ;; burn mainnet
 
 ;; data vars
@@ -42,9 +44,9 @@
 (define-public (buy (token-trait <sip-010-trait>) (stx-amount uint) ) 
   (begin
     (asserts! (var-get tradable) ERR-TRADING-DISABLED)
-    (asserts! (> stx-amount u0) ERR-NOT-ENOUGH-STX-BALANCE)
+    (asserts! (> stx-amount u0) ERR-NOT-ENOUGH-STX-BALANCE) ;; more like stx-amount must be positive
     (let (
-      (buy-info (unwrap! (get-buyable-tokens stx-amount) BUY-INFO-ERROR))
+      (buy-info (unwrap! (get-buyable-tokens stx-amount) BUY-INFO-ERROR)) 
       (stx-fee (get fee buy-info))
       (stx-after-fee (get stx-buy buy-info))
       (tokens-out (get buyable-token buy-info))
@@ -53,6 +55,7 @@
       (new-stx-balance (+ (var-get stx-balance) stx-after-fee))
       
     )
+      (asserts! (is-eq (contract-of token-trait) this-token) ERR_WRONG_FT_TOKEN)
       ;; user send stx fee to stxcity
       (try! (stx-transfer? stx-fee tx-sender STX_CITY_SWAP_FEE_WALLET))
       ;; user send stx to dex
@@ -61,7 +64,7 @@
       (try! (as-contract (contract-call? token-trait transfer tokens-out tx-sender recipient none)))
       (var-set stx-balance new-stx-balance )
       (var-set token-balance new-token-balance)
-      (if (>= new-stx-balance  STX_TARGET_AMOUNT)
+      (if (>= new-stx-balance STX_TARGET_AMOUNT)
         (begin
           (let (
             (contract-token-balance (var-get token-balance))
@@ -73,7 +76,7 @@
             ;; burn tokens
             (try! (as-contract (contract-call? token-trait transfer burn-amount tx-sender BURN_ADDRESS none)))
             ;; send to Velar's address
-            (try! (as-contract (contract-call? token-trait transfer remain-tokens tx-sender VELAR_ADDRESS none)))
+            (try! (as-contract (contract-call? token-trait transfer remain-tokens tx-sender VELAR_ADDRESS none))) ;; instead of this: send a signal to VELAR, they manually create the pool, contract sends liquidty and receives LP tokens which are then burnt sent to cant-be-evil.stx
             (try! (as-contract (stx-transfer? remain-stx tx-sender VELAR_ADDRESS)))
             ;; send fee
             (try! (as-contract (stx-transfer? COMPLETE_FEE tx-sender STX_CITY_COMPLETE_FEE_WALLET)))
@@ -97,6 +100,7 @@
 ;; #[allow(unchecked_data)]
 (define-public (sell (token-trait <sip-010-trait>) (tokens-in uint) ) ;; swap out for virtual trading
   (begin
+    (asserts! (is-eq (contract-of token-trait) this-token) ERR_WRONG_FT_TOKEN)
     (asserts! (var-get tradable) ERR-TRADING-DISABLED)
     (asserts! (> tokens-in u0) ERR-NOT-ENOUGH-TOKEN-BALANCE)
     (let (
@@ -109,7 +113,6 @@
       (recipient tx-sender)
     )
       (asserts! (>= current-stx-balance stx-receive) DEX-HAS-NOT-ENOUGH-STX)
-      (asserts! (is-eq tx-sender recipient) ERR-UNAUTHORIZED)
       ;; user send token to dex
       (try! (contract-call? token-trait transfer tokens-in tx-sender BONDING-DEX-ADDRESS none))
       ;; dex transfer stx to user and stxcity
@@ -135,8 +138,8 @@
       (new-stx-balance (+ current-stx-balance stx-after-fee)) 
       (new-token-balance (/ k new-stx-balance)) ;; x' = k / y'
       (tokens-out (- current-token-balance new-token-balance))
-      (recommend-stx-amount (- STX_TARGET_AMOUNT (var-get stx-balance) ))
-      (recommend-stx-amount-after-fee (/ (* recommend-stx-amount u102) u100)) ;; 2% (including 1% fee)
+      (recommend-stx-amount (- STX_TARGET_AMOUNT (var-get stx-balance) )) ;; diff 10k and current = recommend?
+      (recommend-stx-amount-after-fee (/ (* recommend-stx-amount u102) u100)) ;; 2% (including 1% fee) 
   )
    (ok  {fee: stx-fee, buyable-token: tokens-out, stx-buy: stx-after-fee, 
         new-token-balance: new-token-balance, stx-balance: (var-get stx-balance), 

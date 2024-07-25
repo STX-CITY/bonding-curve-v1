@@ -113,7 +113,7 @@
       (recipient tx-sender)
     )
       (asserts! (>= current-stx-balance stx-receive) DEX-HAS-NOT-ENOUGH-STX)
-      (asserts! (is-eq tx-sender recipient) ERR-UNAUTHORIZED)
+      (asserts! (is-eq contract-caller recipient) ERR-UNAUTHORIZED)
       ;; user send token to dex
       (try! (contract-call? token-trait transfer tokens-in tx-sender BONDING-DEX-ADDRESS none))
       ;; dex transfer stx to user and stxcity

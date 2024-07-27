@@ -1,6 +1,43 @@
+
+## How the Bonding Curve DEX Contract Works
+
+The DEX starts with a certain amount of STX (the main cryptocurrency on the Stacks blockchain) and a certain number of tokens.
+
+When someone wants to buy tokens, they send STX to the DEX. The DEX then gives them a certain number of tokens based on a formula in the code.
+
+As more people buy tokens, the price of the tokens goes up, following a "bonding curve." This means that the more tokens that are bought, the more expensive each additional token becomes.
+
+When someone wants to sell their tokens, they send the tokens back to the DEX, and the DEX gives them STX in return, based on the same formula.
+
+Once the DEX has reached a certain amount of STX (the "STX_TARGET_AMOUNT"), the DEX will automatically "complete" the bonding curve. This means that the DEX will burn (or destroy) any remaining tokens and send the remaining STX to a special address called the "VELAR_ADDRESS."
+
+The bonding curve DEX uses the simple formula like a normal AMM DEX:
+k = x * y
+
+## What Happens if the Bonding Curve is Completed?
+
+There is the concept called the Last Buyer who triggers tradable to be disabled on the bonding curve DEX.
+
+The target is 10k STX, and the current balance of the DEX is 9900. If you buy above 100 STX, you will be the last buyer.
+
+If you are the last buyer, after you receive tokens, here is how it works:
+
+1. The DEX will burn 20% of the remaining tokens, creating an inflationary boost for the token.
+2. The DEX will send the STX and token amount to a Velar DEX. The Velar team will pair STX with the token to create a trading pair and add liquidity for the token.
+3. Trading on the bonding curve is completed, and users can no longer swap on the bonding curve.
+
+## Summary
+
+- Each token will be paired with one bonding curve DEX.
+- After the user deploys a bonding curve token, they have to deploy a bonding curve DEX.
+- In the token's contract, the total supply will be sent to the DEX's balance.
+- The DEX starts with 0 STX and 10B tokens.
+- The DEX ends at {target} STX.
+- After transfer to Velar, the DEX balance should be 0 STX and 0 tokens.
+
 ## Test steps:
 
-:set_tx_sender ST3PF13W7Z0RRM42A8VZRVFQ75SV1K26RXEP8YGKJ
+::set_tx_sender ST3PF13W7Z0RRM42A8VZRVFQ75SV1K26RXEP8YGKJ
 
 ### Buy tokens
 

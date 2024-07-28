@@ -35,6 +35,16 @@ If you are the last buyer, after you receive tokens, here is how it works:
 - The DEX ends at {target} STX.
 - After transfer to Velar, the DEX balance should be 0 STX and 0 tokens.
 
+## Audited & Secured Bonding Curve Contract
+
+STX City's bonding curve contract has undergone a comprehensive security audit by the Gecko Security [(@gecko_sec)](https://x.com/gecko_sec). Their rigorous review process ensures our contract meets the highest standards of security and reliability.
+
+In addition to the audit, we have successfully conducted two rounds of testing on our testnet, with hundreds of participants actively engaging with the platform. This real-world testing has further strengthened the security and stability of our bonding curve contract.
+
+At STXCITY, we prioritize providing a secure and trustworthy platform for our community. The audit by Gecko Security and successful testnet rounds demonstrate our commitment to delivering a robust and reliable solution for decentralized finance on the Stacks blockchain.
+
+Audit file: [gecko_stxcity_audit_final.pdf](/gecko_stxcity_audit_final.pdf)
+
 ## Test steps:
 
 ::set_tx_sender ST3PF13W7Z0RRM42A8VZRVFQ75SV1K26RXEP8YGKJ

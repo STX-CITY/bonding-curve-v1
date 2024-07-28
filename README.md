@@ -37,13 +37,13 @@ If you are the last buyer, after you receive tokens, here is how it works:
 
 ## Audited & Secured Bonding Curve Contract
 
-STX City's bonding curve contract has undergone a comprehensive security audit by the Gecko Security [(@gecko_sec)](https://x.com/gecko_sec). Their rigorous review process ensures our contract meets the highest standards of security and reliability.
+STXCITY's bonding curve contract has undergone a comprehensive security audit by the Gecko Security [(@gecko_sec)](https://x.com/gecko_sec). Their rigorous review process ensures our contract meets the highest standards of security and reliability.
 
-In addition to the audit, we have successfully conducted two rounds of testing on our testnet, with hundreds of participants actively engaging with the platform. This real-world testing has further strengthened the security and stability of our bonding curve contract.
+In addition to the audit, we have successfully conducted two rounds of testing on our testnet [round 2](https://x.com/stxcity/status/1815416071966585148) [round 1](https://x.com/stxcity/status/1811675675881034059), with hundreds of participants actively engaging with the platform. This real-world testing has further strengthened the security and stability of our bonding curve contract.
 
 At STXCITY, we prioritize providing a secure and trustworthy platform for our community. The audit by Gecko Security and successful testnet rounds demonstrate our commitment to delivering a robust and reliable solution for decentralized finance on the Stacks blockchain.
 
-Audit file: [gecko_stxcity_audit_final.pdf](/gecko_stxcity_audit_final.pdf)
+Audit file: [gecko_stxcity_audit_final.pdf](https://drive.google.com/file/d/13UlAxNzfJ0fwH3g1ddaqOJJed4RzRn5d/view?usp=sharing)
 
 ## Test steps:
 
